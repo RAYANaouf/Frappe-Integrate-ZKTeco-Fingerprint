@@ -5,6 +5,7 @@ app_description = "that app is for integrating the fingerprint device ZKTeco"
 app_email = "rayanaouf1512@gmail.com"
 app_license = "mit"
 
+
 # Apps
 # ------------------
 
@@ -177,6 +178,8 @@ app_license = "mit"
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "frappe_integrate_zkteco_fingerprint.event.get_events"
 # }
+
+
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
