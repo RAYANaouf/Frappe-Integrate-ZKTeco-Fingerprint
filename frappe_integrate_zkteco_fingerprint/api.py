@@ -37,17 +37,30 @@ def iclock_cdata():
                 frappe.log_error(f"User {user_id} at {timestamp}")
                 employee = frappe.db.get_value(
                     "Employee",
-                    {"attendance_device_id": user_id},
+                    {"custom_attendance_device_employee_id": user_id},
                     "name"
                 )
                 if not employee:
                     frappe.log_error(f"No employee mapped for device user {user_id}")
                     continue
+
+                # check if a checkin already exists in the last 30 seconds
+                existing = frappe.db.exists(
+                    "Employee Checkin",
+                    {
+                        "employee": employee,
+                        "time": timestamp
+                    }
+                )
+
+                if existing:
+                    frappe.log_error(f"Duplicate checkin ignored for {employee} at {timestamp}")
+                    continue
+
                 frappe.get_doc({
                     "doctype": "Employee Checkin",
                     "employee": employee,
-                    "time": timestamp,
-                    "log_type": "IN"
+                    "time": timestamp
                 }).insert(ignore_permissions=True)
                 
 
