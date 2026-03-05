@@ -27,9 +27,10 @@ def iclock_cdata():
     table = frappe.request.args.get("table")
     frappe.log_error(f"iclock_cdata table: {table}")
 
-    if table and table.upper() == "ATTLOG":
+    if table and table.upper().startswith("ATTLOG"):
         lines = data.split("\n")
         for line in lines:
+            frappe.log_error(f"iclock_cdata line: {line}")
             fields = line.strip().split("\t")
             if len(fields) >= 2:
                 user_id, timestamp = fields[0], fields[1]
