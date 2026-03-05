@@ -11,6 +11,7 @@ def iclock_getrequest():
     Original function — returns the command for the K50 device.
     """
     frappe.logger().info("iclock_getrequest called")
+    frappe.log_error("iclock_getrequest called")
     # Return plain text directly
     return Response("DATA QUERY USERINFO\n", mimetype="text/plain")
 
@@ -20,6 +21,7 @@ def iclock_cdata():
     """
     Original function — handles POSTed attendance logs from K50.
     """
+    frappe.log_error("iclock_cdata called")
     data = frappe.request.data.decode("utf-8", errors="ignore").strip()
     table = frappe.request.args.get("table")
 
