@@ -35,6 +35,21 @@ def iclock_cdata():
             if len(fields) >= 2:
                 user_id, timestamp = fields[0], fields[1]
                 frappe.log_error(f"User {user_id} at {timestamp}")
+                employee = frappe.db.get_value(
+                    "Employee",
+                    {"attendance_device_id": user_id},
+                    "name"
+                )
+                if not employee:
+                    frappe.log_error(f"No employee mapped for device user {user_id}")
+                    continue
+                frappe.get_doc({
+                    "doctype": "Employee Checkin",
+                    "employee": employee,
+                    "time": timestamp,
+                    "log_type": "IN"
+                }).insert(ignore_permissions=True)
+                
 
     return Response("OK", mimetype="text/plain")
 

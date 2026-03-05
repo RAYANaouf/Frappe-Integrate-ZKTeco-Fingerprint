@@ -231,6 +231,49 @@ app_license = "mit"
 # 	}
 # ]
 
+
+
+
+
+fixtures = [
+    {
+        'dt': 'DocType',
+        'filters': [
+            ["istable" , "=" ,  1],
+            ["module" , "in" , ["zkteco fingerprint"]],
+        ]
+    },
+    {
+        'dt': 'Custom Field',
+        'filters': [
+            ["module" , "in" , ["zkteco fingerprint"]],
+        ]
+    },
+    {
+        'dt': 'Client Script',
+        'filters': [
+            ["module" , "in" , ["zkteco fingerprint"]],
+        ]
+    },
+    {
+        'dt': 'Server Script',
+        'filters': [
+            ["module" , "in" , ["zkteco fingerprint"]],
+        ]
+    },
+    {
+        'dt': 'Report',
+        'filters': [
+            ["module" , "in" , ["zkteco fingerprint"]],
+        ]
+    },
+    {
+        'dt': 'Workflow',
+    }
+]
+
+
+
 # Authentication and authorization
 # --------------------------------
 
