@@ -23,7 +23,9 @@ def iclock_cdata():
     """
     frappe.log_error("iclock_cdata called")
     data = frappe.request.data.decode("utf-8", errors="ignore").strip()
+    frappe.log_error(f"iclock_cdata data: {data}")
     table = frappe.request.args.get("table")
+    frappe.log_error(f"iclock_cdata table: {table}")
 
     if table and table.upper() == "ATTLOG":
         lines = data.split("\n")
@@ -31,7 +33,7 @@ def iclock_cdata():
             fields = line.strip().split("\t")
             if len(fields) >= 2:
                 user_id, timestamp = fields[0], fields[1]
-                frappe.logger().info(f"User {user_id} at {timestamp}")
+                frappe.log_error(f"User {user_id} at {timestamp}")
 
     return Response("OK", mimetype="text/plain")
 
