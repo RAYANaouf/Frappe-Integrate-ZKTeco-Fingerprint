@@ -28,41 +28,61 @@ def iclock_cdata():
     frappe.log_error(f"iclock_cdata table: {table}")
 
     if table and table.upper().startswith("ATTLOG"):
+        from datetime import datetime, timedelta
+
         lines = data.split("\n")
+
         for line in lines:
-            frappe.log_error(f"iclock_cdata line: {line}")
-            fields = line.strip().split("\t")
-            if len(fields) >= 2:
-                user_id, timestamp = fields[0], fields[1]
-                frappe.log_error(f"User {user_id} at {timestamp}")
+
+            fields = line.strip().split()
+
+            if len(fields) >= 3:
+
+                user_id = fields[0]
+                timestamp = f"{fields[1]} {fields[2]}"
+
                 employee = frappe.db.get_value(
                     "Employee",
                     {"custom_attendance_device_employee_id": user_id},
                     "name"
                 )
+
                 if not employee:
                     frappe.log_error(f"No employee mapped for device user {user_id}")
                     continue
 
-                # check if a checkin already exists in the last 30 seconds
-                existing = frappe.db.exists(
-                    "Employee Checkin",
-                    {
-                        "employee": employee,
-                        "time": timestamp
-                    }
-                )
+                ts = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+
+                existing = frappe.db.sql("""
+                    SELECT name FROM `tabEmployee Checkin`
+                    WHERE employee=%s
+                    AND time >= %s
+                    ORDER BY time DESC
+                    LIMIT 1
+                """, (employee, ts - timedelta(seconds=30)))
 
                 if existing:
-                    frappe.log_error(f"Duplicate checkin ignored for {employee} at {timestamp}")
+                    frappe.log_error(f"Duplicate scan ignored for {employee}")
                     continue
+
+                last_log = frappe.get_all(
+                    "Employee Checkin",
+                    filters={"employee": employee},
+                    fields=["log_type"],
+                    order_by="time desc",
+                    limit_page_length=1
+                )
+
+                log_type = "IN"
+                if last_log and last_log[0].log_type == "IN":
+                    log_type = "OUT"
 
                 frappe.get_doc({
                     "doctype": "Employee Checkin",
                     "employee": employee,
-                    "time": timestamp
+                    "time": timestamp,
+                    "log_type": log_type
                 }).insert(ignore_permissions=True)
-                
 
     return Response("OK", mimetype="text/plain")
 
