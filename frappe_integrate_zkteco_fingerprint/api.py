@@ -54,7 +54,7 @@ def iclock_cdata():
 
                 ts = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
                 ts = ts - timedelta(hours=TIME_OFFSET_HOURS)
-                
+
                 existing = frappe.db.sql("""
                     SELECT name FROM `tabEmployee Checkin`
                     WHERE employee=%s
@@ -82,7 +82,7 @@ def iclock_cdata():
                 frappe.get_doc({
                     "doctype": "Employee Checkin",
                     "employee": employee,
-                    "time": timestamp,
+                    "time": ts,
                     "log_type": log_type
                 }).insert(ignore_permissions=True)
 
