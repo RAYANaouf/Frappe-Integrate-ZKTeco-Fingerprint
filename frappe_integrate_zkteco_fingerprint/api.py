@@ -29,7 +29,8 @@ def iclock_cdata():
 
     if table and table.upper().startswith("ATTLOG"):
         from datetime import datetime, timedelta
-
+        # Configurable time offset (hours)
+        TIME_OFFSET_HOURS = 7  # adjust as needed
         lines = data.split("\n")
 
         for line in lines:
@@ -52,7 +53,8 @@ def iclock_cdata():
                     continue
 
                 ts = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-
+                ts = ts - timedelta(hours=TIME_OFFSET_HOURS)
+                
                 existing = frappe.db.sql("""
                     SELECT name FROM `tabEmployee Checkin`
                     WHERE employee=%s
